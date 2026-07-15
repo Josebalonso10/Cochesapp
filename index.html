@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>COCHES</title>
+  <style>
+    /* … MISMO CSS QUE ANTES … */
+    :root {
+      --text-xs:   clamp(0.75rem,  0.7rem  + 0.25vw, 0.875rem);
+      --text-sm:   clamp(0.875rem, 0.8rem  + 0.35vw, 1rem);
+      --text-base: clamp(1rem,     0.95rem + 0.25vw, 1.125rem);
+      --text-lg:   clamp(1.125rem, 1rem    + 0.75vw, 1.5rem);
+      --text-xl:   clamp(1.5rem,   1.2rem  + 1.25vw, 2.25rem);
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-5:  1.25rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-10: 2.5rem;
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-full: 9999px;
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    :root, [data-theme="light"] {
+      --color-bg:             #f7f6f2;
+      --color-surface:        #f9f8f5;
+      --color-surface-2:      #fbfbf9;
+      --color-surface-offset: #f3f0ec;
+      --color-border:         #d4d1ca;
+      --color-text:           #28251d;
+      --color-text-muted:     #7a7974;
+      --color-text-faint:     #bab9b4;
+      --color-primary:        #01696f;
+      --color-primary-hover:  #0c4e54;
+      --color-error:          #a12c7b;
+      --color-error-bg:       oklch(from var(--color-error) l c h / 0.08);
+      --shadow-sm: 0 1px 2px oklch(0.2 0.01 80 / 0.06);
+      --shadow-md: 0 4px 12px oklch(0.2 0.01 80 / 0.08);
+    }
+
+    [data-theme="dark"] {
+      --color-bg:             #171614;
+      --color-surface:        #1c1b19;
+      --color-surface-2:      #201f1d;
+      --color-surface-offset: #22211f;
+      --color-border:         #393836;
+      --color-text:           #cdccca;
+      --color-text-muted:     #797876;
+      --color-text-faint:     #5a5957;
+      --color-primary:        #4f98a3;
+      --color-primary-hover:  #227f8b;
+      --color-error:          #d163a7;
+      --color-error-bg:       oklch(from var(--color-error) l c h / 0.15);
+      --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.2);
+      --shadow-md: 0 4px 12px oklch(0 0 0 / 0.3);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: var(--text-base);
+      line-height: 1.6;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+    }
+    img, svg { display: block; max-width: 100%; height: auto; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    input, select, textarea { font: inherit; color: inherit; }
+
+    .app {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-4);
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-4);
+    }
+
+    .title { font-size: var(--text-xl); font-weight: 700; }
+    .subtitle { font-size: var(--text-sm); color: var(--color-text-muted); }
+
+    .pill {
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-full);
+      background-color: var(--color-surface-offset);
+      font-size: var(--text-sm);
+    }
+
+    .theme-toggle {
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-border);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      background-color: var(--color-surface);
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    .theme-toggle:hover { background-color: var(--color-surface-2); box-shadow: var(--shadow-md); }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    @media (min-width: 768px) {
+      .layout-grid { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); }
+    }
+
+    .card {
+      background-color: var(--color-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid oklch(from var(--color-border) l c h / 0.7);
+    }
+
+    .card-title { font-size: var(--text-lg); font-weight: 600; margin-bottom: var(--space-3); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+    @media (min-width: 640px) {
+      .form-grid-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+    }
+
+    label {
+      font-size: var(--text-sm);
+      font-weight: 500;
+      color: var(--color-text);
+      display: block;
+      margin-bottom: var(--space-1);
+    }
+
+    input[type="date"], input[type="text"], select, textarea {
+      width: 100%;
+      padding: var(--space-2);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-2);
+      font-size: var(--text-sm);
+      transition: border-color var(--transition-interactive), box-shadow var(--transition-interactive), background var(--transition-interactive);
+    }
+    textarea { min-height: 80px; resize: vertical; }
+    
+    input:focus-visible, select:focus-visible, textarea:focus-visible {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 1px var(--color-primary);
+      background-color: var(--color-surface);
+    }
+
+    .checkbox-group { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-2);
+      font-size: var(--text-sm);
+    }
+    .chip input { margin: 0; }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+
+    .btn-primary {
+      background-color: var(--color-primary);
+      color: #fff;
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-full);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--transition-interactive), box-shadow var(--transition-interactive);
+    }
+    .btn-primary:hover { background-color: var(--color-primary-hover); box-shadow: var(--shadow-md); }
+
+    .btn-secondary {
+      border-radius: var(--radius-full);
+      padding: var(--space-2) var(--space-4);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-2);
+      font-size: var(--text-sm);
+    }
+
+    .btn-danger {
+      border-radius: var(--radius-full);
+      padding: var(--space-1) var(--space-2);
+      border: 1px solid var(--color-error);
+      color: var(--color-error);
+      background-color: var(--color-error-bg);
+      font-size: var(--text-xs);
+    }
+
+    .section-title { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-2); color: var(--color-text-muted); }
+
+    .summary-grid { display: grid; grid-template-columns: 1fr; gap: var(--space-2); }
+    @media (min-width: 640px) { .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+    .summary-item {
+      border-radius: var(--radius-md);
+      padding: var(--space-2);
+      background-color: var(--color-surface-2);
+      border: 1px solid oklch(from var(--color-border) l c h / 0.7);
+    }
+
+    .summary-item.highlight-red {
+        border-color: var(--color-error);
+        background-color: var(--color-error-bg);
+    }
+
+    .summary-name { font-size: var(--text-sm); font-weight: 600; margin-bottom: var(--space-1); }
+    .summary-name.red-text { color: var(--color-error); }
+    
+    .summary-metrics { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    .bar-track {
+      margin-top: var(--space-1);
+      height: 6px;
+      border-radius: var(--radius-full);
+      background-color: var(--color-surface-offset);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: var(--radius-full);
+      background: linear-gradient(90deg, var(--color-primary), #00a2b8);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 240ms ease-out;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: var(--space-2);
+      font-size: var(--text-xs);
+    }
+    .history-table th, .history-table td {
+      padding: var(--space-1) var(--space-2);
+      border-bottom: 1px solid var(--color-border);
+      text-align: left;
+      vertical-align: top;
+    }
+    .history-table th {
+      background-color: var(--color-surface-offset);
+      font-weight: 600;
+    }
+    .history-table tr:hover td { background-color: oklch(from var(--color-surface-offset) l c h / 0.6); }
+
+    .history-actions { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: var(--radius-full);
+      padding: 0 var(--space-1);
+      font-size: var(--text-xs);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-surface-offset);
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      align-items: center;
+      margin-bottom: var(--space-2);
+    }
+    .filter-row select { max-width: 180px; }
+
+    .shift-badge { display: inline-flex; align-items: center; border-radius: var(--radius-full); padding: 0 var(--space-2); font-size: var(--text-xs); font-weight: 600; color: #fff; }
+    .shift-manana, .shift-manana12h { background: #2f8f46; }
+    .shift-tarde { background: #2b6cb0; }
+    .shift-noche, .shift-noche12h { background: #c0392b; }
+    .shift-otros { background: #6b7280; }
+
+    .participant-card { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
+    .participant-meta { font-size: var(--text-xs); color: var(--color-text-muted); }
+
+    .error-message { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-error); }
+    
+    .suggestion-box {
+        grid-column: 1 / -1;
+        background-color: var(--color-surface-offset);
+        border: 1px solid var(--color-primary);
+        padding: var(--space-3);
+        border-radius: var(--radius-md);
+        margin-top: var(--space-2);
+    }
+    .suggestion-title { font-size: var(--text-sm); font-weight: 700; color: var(--color-primary); margin-bottom: var(--space-1); }
+    .suggestion-text { font-size: var(--text-sm); color: var(--color-text); }
+    .suggestion-sub { font-size: var(--text-xs); color: var(--color-text-muted); margin-top: 4px; }
+
+    /* Pantalla de login */
+    .login-screen {
+      max-width: 400px;
+      margin: 10vh auto;
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-md);
+    }
+    .login-title {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      margin-bottom: var(--space-3);
+      text-align: center;
+    }
+    .login-subtitle {
+      font-size: var(--text-sm);
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-4);
+      text-align: center;
+    }
+    .hidden { display: none !important; }
+
+  </style>
+</head>
+<body>
+
+<!-- PANTALLA DE LOGIN -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-title">COCHES</div>
+  <div class="login-subtitle">Selecciona tu usuario para entrar</div>
+  <label for="loginUser">Usuario</label>
+  <select id="loginUser" style="margin-bottom: var(--space-3);"></select>
+  <button id="loginBtn" class="btn-primary" style="width:100%">Entrar</button>
+  <p id="loginError" class="error-message" style="display:none;"></p>
+</div>
+
+<!-- APP PRINCIPAL -->
+<div id="appMain" class="app hidden">
+  <header>
+    <div>
+      <div class="title">COCHES</div>
+      <div class="subtitle">Registro de viajes compartidos</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:flex-end; gap: var(--space-2);">
+      <div style="display:flex; gap:var(--space-2); align-items:center;">
+        <label for="currentUser" class="subtitle">Usuario actual</label>
+        <select id="currentUser" style="padding:var(--space-1) var(--space-2); border-radius:var(--radius-full); border:1px solid var(--color-border); background-color:var(--color-surface-2); font-size:var(--text-xs);"></select>
+      </div>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Cambiar tema">
+        <span style="font-size:var(--text-xs);">Tema</span>
+        <span style="font-size:var(--text-xs);">🌞</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="layout-grid">
+      <section class="card" aria-label="Registrar viaje">
+        <h2 class="card-title">Nuevo viaje</h2>
+        <p class="subtitle" style="margin-bottom:var(--space-3);">Rellena los datos del día y guarda para actualizar el resumen.</p>
+        <form id="tripForm" class="form-grid" autocomplete="off">
+          <div class="form-grid-two">
+            <div>
+              <label for="date">Fecha</label>
+              <input type="date" id="date" required />
+            </div>
+            <div>
+              <label for="shift">Turno</label>
+              <select id="shift"><option value="Mañana">Mañana</option><option value="Mañana12h">Mañana12h</option><option value="Tarde">Tarde</option><option value="Noche">Noche</option><option value="Noche12h">Noche12h</option><option value="Otros">Otros</option></select>
+            </div>
+          </div>
+
+          <div class="form-grid-two" style="margin-top:var(--space-2);">
+            <div>
+              <label for="driver">Conductor</label>
+              <select id="driver" required></select>
+            </div>
+            <div>
+              <label for="unaiCarrier">Quién lleva hasta Unai (solo cuando conduce Unai)</label>
+              <select id="unaiCarrier">
+                <option value="">Nadie / no aplica</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label>Pasajeros</label>
+            <div id="passengers" class="checkbox-group"></div>
+          </div>
+
+          <div>
+            <label for="notes">Observaciones</label>
+            <textarea id="notes" placeholder="Cambios de turno, incidencias..."></textarea>
+          </div>
+
+          <input type="hidden" id="editId" value="" />
+
+          <div class="btn-row">
+            <button type="submit" class="btn-primary" id="saveBtn">Guardar viaje</button>
+            <button type="button" class="btn-secondary" id="cancelEditBtn" style="display:none;">Cancelar edición</button>
+          </div>
+          <p id="formError" class="error-message" style="display:none;"></p>
+        </form>
+      </section>
+
+      <section class="card" aria-label="Resumen">
+        <h2 class="card-title">Resumen</h2>
+        <p class="subtitle" style="margin-bottom:var(--space-2);">Puntos como conductor y veces que cada uno ha llevado hasta Unai.</p>
+        <div class="filter-row">
+          <label for="monthFilter" class="subtitle">Filtrar por mes</label>
+          <select id="monthFilter"></select>
+          <button type="button" class="btn-secondary" id="clearFilterBtn">Sin filtro</button>
+        </div>
+        <div id="summary" class="summary-grid"></div>
+      </section>
+    </div>
+
+    <section class="card" aria-label="Historial">
+      <h2 class="card-title">Historial de viajes</h2>
+      <p class="subtitle">Pulsa en editar o borrar (solo Joseba) para corregir datos. Los cambios se guardan automáticamente.</p>
+      <table class="history-table" aria-label="Tabla de viajes">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Turno</th>
+            <th>Conductor</th>
+            <th>Pasajeros</th>
+            <th>Hasta Unai</th>
+            <th>Observaciones</th>
+            <th>Creado por</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody"></tbody>
+      </table>
+    </section>
+
+    <section class="card" aria-label="Estadística de uso">
+      <h2 class="card-title">Estadística de uso</h2>
+      <p class="subtitle" style="margin-bottom:var(--space-2);">Conductor: 1 punto/día. Pasajero: 1 punto cada 3 días. Balance 0 = conducir 1 de cada 4.</p>
+      <div id="usageStats" class="summary-grid"></div>
+    </section>
+
+    <section class="card" aria-label="Participantes">
+      <h2 class="card-title">Participantes</h2>
+      <p class="subtitle" style="margin-bottom:var(--space-2);">Añade, edita o desactiva participantes. Los inactivos no salen en viajes nuevos pero conservan el histórico.</p>
+      <div class="form-grid-two" style="margin-bottom:var(--space-2);">
+        <div>
+          <label for="participantName">Nombre</label>
+          <input type="text" id="participantName" placeholder="Nuevo participante" />
+        </div>
+        <div style="display:flex; align-items:flex-end; gap:var(--space-2);">
+          <button type="button" class="btn-primary" id="addParticipantBtn">Añadir</button>
+          <button type="button" class="btn-secondary" id="cancelParticipantEditBtn" style="display:none;">Cancelar</button>
+        </div>
+      </div>
+      <input type="hidden" id="participantEditId" value="" />
+      <div id="participantsManager" class="summary-grid"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+// CONFIG: URL del backend (ajustar cuando se despliegue)
+const API_BASE = ''; 
+
+(async function(){
+  let state = {
+    users: [],
+    trips: [],
+    filterMonth: null,
+    currentUser: null,
+  };
+
+  const loginScreen = document.getElementById('loginScreen');
+  const appMain = document.getElementById('appMain');
+  const loginUserSelect = document.getElementById('loginUser');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
+
+  const currentUserSelect = document.getElementById('currentUser');
+  const dateInput = document.getElementById('date');
+  const shiftInput = document.getElementById('shift');
+  const driverSelect = document.getElementById('driver');
+  const unaiCarrierSelect = document.getElementById('unaiCarrier');
+  const passengersContainer = document.getElementById('passengers');
+  const notesInput = document.getElementById('notes');
+  const editIdInput = document.getElementById('editId');
+  const formError = document.getElementById('formError');
+  const tripForm = document.getElementById('tripForm');
+  const summaryContainer = document.getElementById('summary');
+  const monthFilterSelect = document.getElementById('monthFilter');
+  const clearFilterBtn = document.getElementById('clearFilterBtn');
+  const historyBody = document.getElementById('historyBody');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelEditBtn = document.getElementById('cancelEditBtn');
+  const themeToggle = document.getElementById('themeToggle');
+  const participantsManager = document.getElementById('participantsManager');
+  const usageStats = document.getElementById('usageStats');
+  const participantName = document.getElementById('participantName');
+  const addParticipantBtn = document.getElementById('addParticipantBtn');
+  const cancelParticipantEditBtn = document.getElementById('cancelParticipantEditBtn');
+  const participantEditId = document.getElementById('participantEditId');
+
+  // --- API helpers ---
+  async function apiGet(path) {
+    const res = await fetch(API_BASE + path);
+    if (!res.ok) throw new Error('Error en API');
+    return res.json();
+  }
+  async function apiPost(path, body) {
+    const res = await fetch(API_BASE + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Error en API');
+    }
+    return res.json();
+  }
+  async function apiDelete(path) {
+    const res = await fetch(API_BASE + path, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Error en API');
+    return res.json();
+  }
+
+  // --- Inicialización ---
+  async function loadUsers() {
+    const users = await apiGet('/api/users');
+    state.users = users;
+    const active = users.filter(u => u.active).map(u => u.name);
+
+    // Login select
+    loginUserSelect.innerHTML = '';
+    active.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      loginUserSelect.appendChild(opt);
+    });
+
+    // Current user select (una vez dentro)
+    currentUserSelect.innerHTML = '';
+    active.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      currentUserSelect.appendChild(opt);
+    });
+  }
+
+  async function loadTrips() {
+    const month = state.filterMonth || '';
+    const url = month ? `/api/trips?month=${month}` : '/api/trips';
+    state.trips = await apiGet(url);
+  }
+
+  function showApp() {
+    loginScreen.classList.add('hidden');
+    appMain.classList.remove('hidden');
+  }
+
+  loginBtn.addEventListener('click', async () => {
+    loginError.style.display = 'none';
+    const user = loginUserSelect.value;
+    if (!user) {
+      loginError.textContent = 'Selecciona un usuario.';
+      loginError.style.display = 'block';
+      return;
+    }
+    state.currentUser = user;
+    currentUserSelect.value = user;
+    try {
+      await Promise.all([loadUsers(), loadTrips()]);
+      showApp();
+      initDateDefault();
+      initUsersUI();
+      buildMonthFilterOptions();
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+      renderParticipantsManager();
+    } catch (e) {
+      loginError.textContent = 'Error al cargar datos.';
+      loginError.style.display = 'block';
+    }
+  });
+
+  // --- Lógica de UI (muy similar a tu versión anterior) ---
+
+  function activeUsers() {
+    return state.users.filter(u => u.active).map(u => u.name);
+  }
+
+  function initUsersUI() {
+    const active = activeUsers();
+    driverSelect.innerHTML = '';
+    unaiCarrierSelect.innerHTML = '<option value="">Nadie / no aplica</option>';
+    passengersContainer.innerHTML = '';
+
+    active.forEach(user => {
+      const opt = document.createElement('option');
+      opt.value = user;
+      opt.textContent = user;
+      driverSelect.appendChild(opt);
+
+      if (user !== 'Unai') {
+        const opt2 = document.createElement('option');
+        opt2.value = user;
+        opt2.textContent = user;
+        unaiCarrierSelect.appendChild(opt2);
+      }
+
+      const chip = document.createElement('label');
+      chip.className = 'chip';
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.value = user;
+      cb.name = 'passenger';
+      const span = document.createElement('span');
+      span.textContent = user;
+      chip.appendChild(cb);
+      chip.appendChild(span);
+      passengersContainer.appendChild(chip);
+    });
+
+    updatePassengerAvailability();
+    toggleUnaiField();
+  }
+
+  function initDateDefault() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    dateInput.value = `${yyyy}-${mm}-${dd}`;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return dateStr;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth()+1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+
+  function getMonthKey(dateStr) {
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return null;
+    const month = String(d.getMonth()+1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${year}-${month}`;
+  }
+
+  function buildMonthFilterOptions() {
+    const keys = new Set();
+    state.trips.forEach(t => {
+      const key = getMonthKey(t.date);
+      if (key) keys.add(key);
+    });
+    const sorted = Array.from(keys).sort();
+    monthFilterSelect.innerHTML = '';
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = sorted.length ? 'Selecciona mes' : 'Sin datos aún';
+    monthFilterSelect.appendChild(placeholder);
+    sorted.forEach(key => {
+      const [y,m] = key.split('-');
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = `${m}/${y}`;
+      monthFilterSelect.appendChild(opt);
+    });
+    if (!state.filterMonth) monthFilterSelect.value = '';
+  }
+
+  function computeStats() {
+    const stats = {};
+    state.users.forEach(u => {
+      stats[u.name] = { drives: 0, toUnai: 0, active: u.active };
+    });
+
+    state.trips.forEach(t => {
+      if (state.filterMonth) {
+        const mk = getMonthKey(t.date);
+        if (mk !== state.filterMonth) return;
+      }
+      if (t.driver && stats[t.driver]) stats[t.driver].drives += 1;
+      if (t.unaiCarrier && stats[t.unaiCarrier]) stats[t.unaiCarrier].toUnai += 1;
+    });
+
+    return stats;
+  }
+
+  function computeUsageStatsNew() {
+    const stats = {};
+    state.users.forEach(u => {
+      stats[u.name] = { 
+        went: 0, 
+        drove: 0, 
+        passengerDays: 0,
+        points: 0,
+        balance: 0,
+        active: u.active 
+      };
+    });
+
+    state.trips.forEach(t => {
+      if (state.filterMonth) {
+        const mk = getMonthKey(t.date);
+        if (mk !== state.filterMonth) return;
+      }
+      
+      const wentPeople = new Set([...(t.passengers || []), t.driver].filter(Boolean));
+      
+      wentPeople.forEach(name => {
+        if (stats[name]) {
+          stats[name].went += 1;
+          
+          if (name === t.driver) {
+            stats[name].drove += 1;
+            stats[name].points += 1;
+          } else {
+            stats[name].passengerDays += 1;
+          }
+        }
+      });
+    });
+
+    Object.values(stats).forEach(s => {
+      const passengerPoints = s.passengerDays / 3;
+      s.points = s.drove + passengerPoints;
+      const expectedPoints = s.went * 0.5;
+      s.balance = s.points - expectedPoints;
+    });
+    
+    return stats;
+  }
+
+  function renderUsageStats() {
+    if (!usageStats) return;
+    const stats = computeUsageStatsNew();
+    usageStats.innerHTML = '';
+    
+    Object.entries(stats).forEach(([name, s]) => {
+      const item = document.createElement('div');
+      item.className = 'summary-item';
+      
+      const title = document.createElement('div');
+      title.className = 'summary-name';
+      title.textContent = name;
+      
+      const metrics = document.createElement('div');
+      metrics.className = 'summary-metrics';
+      const passengerPoints = (s.passengerDays / 3).toFixed(1);
+      metrics.textContent = `Días ido: ${s.went} | Conductor: ${s.drove} | Pasajero: ${s.passengerDays} (${passengerPoints} pts) | Puntos: ${s.points.toFixed(1)} | Balance: ${s.balance.toFixed(1)}`;
+      
+      item.appendChild(title);
+      item.appendChild(metrics);
+      usageStats.appendChild(item);
+    });
+  }
+
+  function renderParticipantsManager() {
+    if (!participantsManager) return;
+    participantsManager.innerHTML = '';
+    state.users.forEach((user, idx) => {
+      const card = document.createElement('div');
+      card.className = 'summary-item participant-card';
+      const left = document.createElement('div');
+      const name = document.createElement('div');
+      name.className = 'summary-name';
+      name.textContent = user.name;
+      const meta = document.createElement('div');
+      meta.className = 'participant-meta';
+      meta.textContent = user.active ? 'Activo' : 'Inactivo';
+      left.appendChild(name);
+      left.appendChild(meta);
+      const right = document.createElement('div');
+      right.className = 'history-actions';
+      const edit = document.createElement('button');
+      edit.type = 'button';
+      edit.className = 'btn-secondary';
+      edit.style.fontSize = 'var(--text-xs)';
+      edit.textContent = 'Editar';
+      edit.addEventListener('click', () => {
+        participantEditId.value = String(idx);
+        participantName.value = user.name;
+        addParticipantBtn.textContent = 'Guardar participante';
+        cancelParticipantEditBtn.style.display = 'inline-flex';
+      });
+      const toggle = document.createElement('button');
+      toggle.type = 'button';
+      toggle.className = user.active ? 'btn-danger' : 'btn-secondary';
+      toggle.style.fontSize = 'var(--text-xs)';
+      toggle.textContent = user.active ? 'Desactivar' : 'Activar';
+      toggle.addEventListener('click', async () => {
+        const newName = user.name;
+        const newActive = !user.active;
+        try {
+          await apiPost('/api/users', { name: newName, active: newActive, oldName: newName });
+          state.users = state.users.map(u =>
+            u.name === newName ? { ...u, active: newActive ? 1 : 0 } : u
+          );
+          initUsersUI();
+          renderParticipantsManager();
+          renderSummary();
+          loadTrips().then(() => {
+            renderSummary();
+            renderUsageStats();
+            renderHistory();
+          });
+        } catch (e) {
+          alert('Error al actualizar usuario');
+        }
+      });
+      right.appendChild(edit);
+      right.appendChild(toggle);
+      card.appendChild(left);
+      card.appendChild(right);
+      participantsManager.appendChild(card);
+    });
+  }
+
+  function renderSummary() {
+    const stats = computeStats();
+    summaryContainer.innerHTML = '';
+    const maxDrives = Math.max(0, ...Object.values(stats).map(s => s.drives));
+    
+    const usageStatsLocal = computeUsageStatsNew();
+    const totalParticipants = activeUsers().length;
+    
+    let minTripsName = null;
+    let minTripsCount = Infinity;
+    
+    const lastDriveDates = {};
+    state.users.forEach(u => lastDriveDates[u.name] = null);
+    
+    state.trips.forEach(t => {
+        if (state.filterMonth && getMonthKey(t.date) !== state.filterMonth) return;
+        if (t.driver) {
+            const d = new Date(t.date);
+            if (!lastDriveDates[t.driver] || d > lastDriveDates[t.driver]) {
+                lastDriveDates[t.driver] = d;
+            }
+        }
+    });
+
+    const candidates = [];
+    
+    Object.entries(stats).forEach(([user, s]) => {
+        if (s.drives < minTripsCount) {
+            minTripsCount = s.drives;
+            minTripsName = user;
+        }
+        
+        const went = usageStatsLocal[user] ? usageStatsLocal[user].went : 0;
+        const drove = s.drives;
+        const balance = usageStatsLocal[user] ? usageStatsLocal[user].balance : 0;
+        
+        candidates.push({
+            name: user,
+            drives: drove,
+            went: went,
+            balance: balance,
+            lastDrive: lastDriveDates[user]
+        });
+    });
+
+    candidates.sort((a, b) => {
+        if (a.balance !== b.balance) return a.balance - b.balance;
+        if (a.drives !== b.drives) return a.drives - b.drives;
+        if (!a.lastDrive && !b.lastDrive) return 0;
+        if (!a.lastDrive) return -1;
+        if (!b.lastDrive) return 1;
+        return a.lastDrive - b.lastDrive;
+    });
+    
+    const nextSuggestion = candidates[0];
+
+    Object.entries(stats).forEach(([user, s]) => {
+      const item = document.createElement('div');
+      item.className = 'summary-item';
+      
+      if (user === minTripsName) {
+          item.classList.add('highlight-red');
+      }
+
+      const name = document.createElement('div');
+      name.className = 'summary-name';
+      if (user === minTripsName) {
+          name.classList.add('red-text');
+          name.textContent = `${user} (Mínimo)`;
+      } else {
+          name.textContent = user;
+      }
+
+      const metrics = document.createElement('div');
+      metrics.className = 'summary-metrics';
+      metrics.textContent = `Conductor: ${s.drives} · Hasta Unai: ${s.toUnai}`;
+
+      const barTrack = document.createElement('div');
+      barTrack.className = 'bar-track';
+      const barFill = document.createElement('div');
+      barFill.className = 'bar-fill';
+      const factor = maxDrives > 0 ? (s.drives / maxDrives) : 0;
+      barFill.style.transform = `scaleX(${factor})`;
+      barTrack.appendChild(barFill);
+
+      item.appendChild(name);
+      item.appendChild(metrics);
+      item.appendChild(barTrack);
+
+      summaryContainer.appendChild(item);
+    });
+    
+    if (nextSuggestion && totalParticipants > 0) {
+        const suggestionBox = document.createElement('div');
+        suggestionBox.className = 'summary-item suggestion-box';
+        
+        const title = document.createElement('div');
+        title.className = 'suggestion-title';
+        title.textContent = `🚗 Siguiente conductor sugerido: ${nextSuggestion.name}`;
+        
+        const text = document.createElement('div');
+        text.className = 'suggestion-text';
+        
+        const went = usageStatsLocal[nextSuggestion.name] ? usageStatsLocal[nextSuggestion.name].went : 0;
+        const usage = usageStatsLocal[nextSuggestion.name];
+        const passengerPts = usage ? (usage.passengerDays / 3).toFixed(1) : 0;
+        const totalPts = usage ? usage.points.toFixed(1) : 0;
+        
+        text.innerHTML = `
+            Debería llevar el coche porque tiene el balance más bajo.
+            <div class="suggestion-sub">
+                • Ha conducido <strong>${nextSuggestion.drives}</strong> veces de <strong>${went}</strong> viajes.<br>
+                • Puntos: ${nextSuggestion.drives} (conductor) + ${passengerPts} (pasajero) = <strong>${totalPts}</strong>.<br>
+                • Balance: <strong>${nextSuggestion.balance.toFixed(1)}</strong> (0 = ideal).<br>
+                ${nextSuggestion.lastDrive ? `• Última vez: ${formatDate(nextSuggestion.lastDrive.toISOString().split('T')[0])}` : '• Nunca ha conducido.'}
+            </div>
+        `;
+        
+        suggestionBox.appendChild(title);
+        suggestionBox.appendChild(text);
+        summaryContainer.appendChild(suggestionBox);
+    }
+  }
+
+  function renderHistory() {
+    historyBody.innerHTML = '';
+    const currentUser = state.currentUser;
+
+    const sorted = [...state.trips].sort((a,b) => {
+      const da = new Date(a.date);
+      const db = new Date(b.date);
+      return db - da;
+    });
+
+    sorted.forEach(t => {
+      if (state.filterMonth) {
+        const mk = getMonthKey(t.date);
+        if (mk !== state.filterMonth) return;
+      }
+      const tr = document.createElement('tr');
+
+      const tdDate = document.createElement('td');
+      tdDate.textContent = formatDate(t.date);
+
+      const tdShift = document.createElement('td');
+      const shiftBadge = document.createElement('span');
+      const shiftClass = (t.shift || 'Otros').toLowerCase();
+      const map = { 'mañana': 'shift-manana', 'mañana12h': 'shift-manana12h', 'tarde': 'shift-tarde', 'noche': 'shift-noche', 'noche12h': 'shift-noche12h', 'otros': 'shift-otros' };
+      shiftBadge.className = 'shift-badge ' + (map[shiftClass] || 'shift-otros');
+      shiftBadge.textContent = t.shift || 'Otros';
+      tdShift.appendChild(shiftBadge);
+
+      const tdDriver = document.createElement('td');
+      tdDriver.textContent = t.driver || '';
+
+      const tdPassengers = document.createElement('td');
+      const pax = typeof t.passengers === 'string' ? JSON.parse(t.passengers || '[]') : (t.passengers || []);
+      tdPassengers.textContent = pax.join(', ') || '';
+
+      const tdUnai = document.createElement('td');
+      tdUnai.textContent = t.unaiCarrier || '';
+
+      const tdNotes = document.createElement('td');
+      tdNotes.textContent = t.notes || '';
+
+      const tdCreatedBy = document.createElement('td');
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.textContent = t.createdBy || '?';
+      tdCreatedBy.appendChild(badge);
+
+      const tdActions = document.createElement('td');
+      const actions = document.createElement('div');
+      actions.className = 'history-actions';
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'btn-secondary';
+      editBtn.textContent = 'Editar';
+      editBtn.style.fontSize = 'var(--text-xs)';
+      editBtn.addEventListener('click', () => startEdit(t.id));
+      actions.appendChild(editBtn);
+
+      if (currentUser === 'Joseba') {
+        const deleteBtn = document.createElement('button');
+        deleteBtn.type = 'button';
+        deleteBtn.className = 'btn-danger';
+        deleteBtn.textContent = 'Borrar';
+        deleteBtn.addEventListener('click', () => deleteTrip(t.id));
+        actions.appendChild(deleteBtn);
+      }
+
+      tdActions.appendChild(actions);
+
+      tr.appendChild(tdDate);
+      tr.appendChild(tdShift);
+      tr.appendChild(tdDriver);
+      tr.appendChild(tdPassengers);
+      tr.appendChild(tdUnai);
+      tr.appendChild(tdNotes);
+      tr.appendChild(tdCreatedBy);
+      tr.appendChild(tdActions);
+
+      historyBody.appendChild(tr);
+    });
+  }
+
+  function validateForm() {
+    formError.style.display = 'none';
+    formError.textContent = '';
+
+    if (!dateInput.value) {
+      formError.textContent = 'Falta la fecha.';
+      formError.style.display = 'block';
+      return false;
+    }
+    if (!driverSelect.value) {
+      formError.textContent = 'Falta el conductor.';
+      formError.style.display = 'block';
+      return false;
+    }
+    return true;
+  }
+
+  function getPassengersFromForm() {
+    const boxes = passengersContainer.querySelectorAll('input[name="passenger"]');
+    const selected = [];
+    boxes.forEach(cb => { if (cb.checked) selected.push(cb.value); });
+    return selected;
+  }
+
+  function setPassengersInForm(list) {
+    const boxes = passengersContainer.querySelectorAll('input[name="passenger"]');
+    boxes.forEach(cb => {
+      cb.checked = list && list.includes(cb.value);
+    });
+  }
+
+  function toggleUnaiField() {
+    const wrap = document.getElementById('unaiCarrier').closest('div');
+    wrap.style.opacity = driverSelect.value === 'Unai' ? '1' : '0.55';
+    unaiCarrierSelect.disabled = driverSelect.value !== 'Unai';
+    if (driverSelect.value !== 'Unai') unaiCarrierSelect.value = '';
+  }
+
+  function updatePassengerAvailability() {
+    const currentDriver = driverSelect.value;
+    const boxes = passengersContainer.querySelectorAll('input[name="passenger"]');
+    boxes.forEach(cb => {
+      if (cb.value === currentDriver) {
+        cb.checked = false;
+        cb.disabled = true;
+        cb.parentElement.style.opacity = '0.45';
+      } else {
+        cb.disabled = false;
+        cb.parentElement.style.opacity = '1';
+      }
+    });
+  }
+
+  function clearForm() {
+    editIdInput.value = '';
+    saveBtn.textContent = 'Guardar viaje';
+    cancelEditBtn.style.display = 'none';
+    formError.style.display = 'none';
+
+    initDateDefault();
+    shiftInput.value = 'Mañana';
+    driverSelect.value = activeUsers()[0] || '';
+    unaiCarrierSelect.value = '';
+    setPassengersInForm([]);
+    notesInput.value = '';
+    updatePassengerAvailability();
+    toggleUnaiField();
+  }
+
+  function startEdit(id) {
+    const trip = state.trips.find(t => t.id === id);
+    if (!trip) return;
+    editIdInput.value = String(id);
+    saveBtn.textContent = 'Guardar cambios';
+    cancelEditBtn.style.display = 'inline-flex';
+
+    dateInput.value = trip.date || '';
+    shiftInput.value = trip.shift || '';
+    driverSelect.value = trip.driver || '';
+    unaiCarrierSelect.value = trip.unaiCarrier || '';
+    const pax = typeof trip.passengers === 'string' ? JSON.parse(trip.passengers || '[]') : (trip.passengers || []);
+    setPassengersInForm(pax);
+    notesInput.value = trip.notes || '';
+    updatePassengerAvailability();
+    toggleUnaiField();
+  }
+
+  async function deleteTrip(id) {
+    if (!confirm('¿Seguro que quieres borrar este viaje?')) return;
+    try {
+      await apiDelete(`/api/trips/${id}`);
+      await loadTrips();
+      buildMonthFilterOptions();
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+    } catch (e) {
+      alert('Error al borrar viaje');
+    }
+  }
+
+  driverSelect.addEventListener('change', function(){ updatePassengerAvailability(); toggleUnaiField(); });
+
+  tripForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    const currentUser = state.currentUser || 'Joseba';
+    const isEdit = !!editIdInput.value;
+    const id = isEdit ? Number(editIdInput.value) : undefined;
+
+    const trip = {
+      id,
+      date: dateInput.value,
+      shift: shiftInput.value.trim(),
+      driver: driverSelect.value,
+      passengers: getPassengersFromForm(),
+      unaiCarrier: driverSelect.value === 'Unai' ? (unaiCarrierSelect.value || '') : '',
+      notes: notesInput.value.trim(),
+      createdBy: currentUser,
+    };
+
+    try {
+      await apiPost('/api/trips', trip);
+      await loadTrips();
+      buildMonthFilterOptions();
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+      clearForm();
+    } catch (e) {
+      formError.textContent = 'Error al guardar viaje.';
+      formError.style.display = 'block';
+    }
+  });
+
+  cancelEditBtn.addEventListener('click', function(){ clearForm(); });
+
+  monthFilterSelect.addEventListener('change', function(){
+    const val = monthFilterSelect.value;
+    state.filterMonth = val || null;
+    loadTrips().then(() => {
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+      buildMonthFilterOptions();
+    });
+  });
+
+  clearFilterBtn.addEventListener('click', function(){
+    state.filterMonth = null;
+    monthFilterSelect.value = '';
+    loadTrips().then(() => {
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+      buildMonthFilterOptions();
+    });
+  });
+
+  addParticipantBtn.addEventListener('click', async function(){
+    const name = participantName.value.trim();
+    if (!name) return;
+    const editIdxStr = participantEditId.value;
+    try {
+      if (editIdxStr !== '') {
+        const idx = Number(editIdxStr);
+        const oldName = state.users[idx].name;
+        await apiPost('/api/users', { name, active: true, oldName });
+        state.users = state.users.map((u, i) =>
+          i === idx ? { ...u, name } : u
+        );
+        // Volver a cargar trips para actualizar referencias
+        await loadTrips();
+      } else {
+        await apiPost('/api/users', { name, active: true });
+        state.users.push({ name, active: true });
+      }
+      initUsersUI();
+      renderParticipantsManager();
+      renderSummary();
+      renderUsageStats();
+      renderHistory();
+      clearForm();
+      participantName.value = '';
+      participantEditId.value = '';
+      addParticipantBtn.textContent = 'Añadir';
+      cancelParticipantEditBtn.style.display = 'none';
+    } catch (e) {
+      alert('Error al guardar participante: ' + e.message);
+    }
+  });
+
+  cancelParticipantEditBtn.addEventListener('click', function(){
+    participantName.value = '';
+    participantEditId.value = '';
+    addParticipantBtn.textContent = 'Añadir';
+    cancelParticipantEditBtn.style.display = 'none';
+  });
+
+  themeToggle.addEventListener('click', function(){
+    const html = document.documentElement;
+    const current = html.getAttribute('data-theme');
+    const next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    themeToggle.querySelector('span:last-child').textContent = next === 'dark' ? '🌙' : '🌞';
+  });
+
+  // Carga inicial: usuarios para login
+  try {
+    await loadUsers();
+  } catch (e) {
+    loginError.textContent = 'No se pudo cargar la lista de usuarios.';
+    loginError.style.display = 'block';
+  }
+
+})();
+</script>
+</body>
+</html>
